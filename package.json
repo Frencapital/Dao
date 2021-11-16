@@ -4,6 +4,7 @@
   "description": "frencapital dao project",
   "main": "src/index.js",
   "scripts": {
+    "compile": "npx hardhat compile",
     "test": "npx hardhat test"
   },
   "repository": {
