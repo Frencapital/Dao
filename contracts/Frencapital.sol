@@ -1,4 +1,4 @@
-// contracts/GameItems.sol
+// contracts/Frencapital.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
