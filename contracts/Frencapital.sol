@@ -16,7 +16,7 @@ contract Frencapital is Ownable, ERC1155 {
     constructor() ERC1155("https://frencapital.com/api/token/{id}.json") {
     }
 
-    //
+    //Mint new tokens for new participants
     function mint(address a, uint256 amount) public onlyOwner {
         //First ten get a founder nft NFT
         if(participants < 10) {
@@ -31,5 +31,9 @@ contract Frencapital is Ownable, ERC1155 {
         participants++;
         _mint(a, FREN, amount, "");
         _mint(this.owner(), FREN, (amount * (daoShare * 1000)) / 100000, "");
+    }
+
+    function burn(address a, uint amount) public onlyOwner {
+        _burn(a, FREN, amount);
     }
 }
