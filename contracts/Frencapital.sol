@@ -11,24 +11,25 @@ contract Frencapital is Ownable, ERC1155 {
 
     uint8 public participants = 0;
 
+    uint8 public daoShare = 4;
+
     constructor() ERC1155("https://frencapital.com/api/token/{id}.json") {
-        //Pass some tokens to contract to fund work
-        _mint(msg.sender, FREN, 1000**18, "");
     }
 
     //
     function mint(address a, uint256 amount) public onlyOwner {
-        //First 4 get five percent bonus tokens for founding costs
-        if(participants < 4) {
-            amount = (amount * 105) / 100;
-        }
-
         //First ten get a founder nft NFT
         if(participants < 10) {
-            _mint(a, FOUN, 1, "");
+           _mint(a, FOUN, 1, "");
         }
-
+        if(participants > 5 && participants < 10) {
+            daoShare = 5;
+        }
+        if(participants >= 10 ) {
+            daoShare = 6;
+        }
         participants++;
         _mint(a, FREN, amount, "");
+        _mint(this.owner(), FREN, (amount * (daoShare * 1000)) / 100000, "");
     }
 }

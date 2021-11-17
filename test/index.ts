@@ -38,7 +38,16 @@ describe("Frencapital", function () {
     const mintTx = await frencapital.mint(addr1.address,mint);
     // wait until the transaction is mined
     await mintTx.wait();
-    expect(await frencapital.balanceOf(addr1.address,0)).to.equal(mint * 1.05);
+    expect(await frencapital.balanceOf(addr1.address,0)).to.equal(mint);
+    expect(await frencapital.balanceOf(owner.address,0)).to.equal(40);
+  });
+
+  it("Should increase the balance of participant after minting", async function() {
+    const mint = 1000;
+    const mintTx = await frencapital.mint(addr1.address,mint);
+    // wait until the transaction is mined
+    await mintTx.wait();
+    expect(await frencapital.balanceOf(addr1.address,0)).to.equal(mint);
     expect(await frencapital.balanceOf(addr1.address,1)).to.equal(1);
   });
 
@@ -47,16 +56,7 @@ describe("Frencapital", function () {
     const mintTx = await frencapital.mint(addr1.address,mint);
     // wait until the transaction is mined
     await mintTx.wait();
-    expect(await frencapital.balanceOf(addr1.address,0)).to.equal(mint * 1.05);
-    expect(await frencapital.balanceOf(addr1.address,1)).to.equal(1);
-  });
-
-  it("Should increase the balance of participant after minting", async function() {
-    const mint = 1000;
-    const mintTx = await frencapital.mint(addr1.address,mint);
-    // wait until the transaction is mined
-    await mintTx.wait();
-    expect(await frencapital.balanceOf(addr1.address,0)).to.equal(mint * 1.05);
+    expect(await frencapital.balanceOf(addr1.address,0)).to.equal(mint);
     expect(await frencapital.balanceOf(addr1.address,1)).to.equal(1);
   });
 
@@ -76,5 +76,20 @@ describe("Frencapital", function () {
     expect(await frencapital.balanceOf(addr2.address,0)).to.equal(mint);
     expect(await frencapital.balanceOf(addr2.address,1)).to.equal(1);
     expect(await frencapital.balanceOf(addr1.address,1)).to.equal(4);
+  });
+  it("Should increase the balance of owner with the percentage set", async function() {
+    const mint = 1000;
+    
+    let tx;
+    for(let i = 0; i<12; i++) {
+      tx = await frencapital.mint(addr1.address,mint);
+      // wait until the transaction is mined
+      await tx.wait();
+    }
+    const mintTx = await frencapital.mint(addr2.address,mint);
+    // wait until the transaction is mined
+    await mintTx.wait();
+
+    expect(await frencapital.balanceOf(owner.address,0)).to.equal(620);
   });
 });
