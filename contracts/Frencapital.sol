@@ -33,5 +33,8 @@ contract Frencapital is Ownable, ERC1155 {
 
     function burn(address a, uint amount) public onlyOwner {
         _burn(a, FREN, amount);
+        if (this.balanceOf(a, FREN) == 0) {
+            participants--;
+        }
     }
 }

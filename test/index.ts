@@ -26,82 +26,70 @@ describe("Frencapital", function () {
     expect(await frencapital.owner()).to.equal(owner.address);
   });
 
-  it("Should increase participants when minting", async function () {
-    const mintTx = await frencapital.mint(addr1.address, 1000);
-    // wait until the transaction is mined
-    await mintTx.wait();
-    expect(await frencapital.participants()).to.equal(1);
-  });
+  context("When minting", () => {
 
-  it("Should increase the balance of participant after minting", async function () {
-    const mint = 1000;
-    const mintTx = await frencapital.mint(addr1.address, mint);
-    // wait until the transaction is mined
-    await mintTx.wait();
-    expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(mint);
-    expect(await frencapital.balanceOf(owner.address, 0)).to.equal(40);
-  });
-
-  it("Should increase the balance of participant after minting", async function () {
-    const mint = 1000;
-    const mintTx = await frencapital.mint(addr1.address, mint);
-    // wait until the transaction is mined
-    await mintTx.wait();
-    expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(mint);
-    expect(await frencapital.balanceOf(addr1.address, 1)).to.equal(1);
-  });
-
-  it("Should increase the balance of participant after minting", async function () {
-    const mint = 1000;
-    const mintTx = await frencapital.mint(addr1.address, mint);
-    // wait until the transaction is mined
-    await mintTx.wait();
-    expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(mint);
-    expect(await frencapital.balanceOf(addr1.address, 1)).to.equal(1);
-  });
-
-  it("Should only increase base balance after four participants", async function () {
-    const mint = 1000;
-
-    let tx;
-    for (let i = 0; i < 4; i++) {
-      tx = await frencapital.mint(addr1.address, mint);
+    it("Should increase participants when minting", async function () {
+      const mintTx = await frencapital.mint(addr1.address, 1000);
       // wait until the transaction is mined
-      await tx.wait();
-    }
-    const mintTx = await frencapital.mint(addr2.address, mint);
-    // wait until the transaction is mined
-    await mintTx.wait();
+      await mintTx.wait();
+      expect(await frencapital.participants()).to.equal(1);
+    });
+  
+    context("FREN tokens", () => {
+      it("Should increase the balance of participant and owner after minting", async function () {
+        const mint = 1000;
+        const fee = 30;
+        const mintTx = await frencapital.mint(addr1.address, mint);
+        // wait until the transaction is mined
+        await mintTx.wait();
+        expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(mint - fee);
+        expect(await frencapital.balanceOf(owner.address, 0)).to.equal(fee);
+      });
+    })
+  
+    context("FOUN tokens", () => {
+      it("Should add a token for the first 10 participants", async function () {
+        const mintTx = await frencapital.mint(addr1.address, 1000);
+        // wait until the transaction is mined
+        await mintTx.wait();
+        expect(await frencapital.balanceOf(addr1.address, 1)).to.equal(1);
+      });
 
-    expect(await frencapital.balanceOf(addr2.address, 0)).to.equal(mint);
-    expect(await frencapital.balanceOf(addr2.address, 1)).to.equal(1);
-    expect(await frencapital.balanceOf(addr1.address, 1)).to.equal(4);
+      it("Should only add a single FOUN token for every founder", async function () {
+        const mintTxA = await frencapital.mint(addr1.address, 1000);
+        const mintTxB = await frencapital.mint(addr1.address, 1000);
+        // wait until all transactions are mined
+        await Promise.all([mintTxA.wait(), mintTxB.wait()]);
+        expect(await frencapital.balanceOf(addr1.address, 1)).to.equal(1);
+      });
+    })
+
   });
-  it("Should increase the balance of owner with the percentage set", async function () {
-    const mint = 1000;
 
-    let tx;
-    for (let i = 0; i < 12; i++) {
-      tx = await frencapital.mint(addr1.address, mint);
-      // wait until the transaction is mined
-      await tx.wait();
-    }
-    const mintTx = await frencapital.mint(addr2.address, mint);
-    // wait until the transaction is mined
-    await mintTx.wait();
+  context("When burning", () => {
+    it("Should reduce the FOUN balance of an address when called", async function () {
+      const burn = 500;
+      const mint = 1000;
+      let mintTx = await frencapital.mint(addr1.address, mint);
+      await mintTx.wait();
+  
+      let burnTx = await frencapital.burn(addr1.address, burn);
+      await burnTx.wait();
+  
+      expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(470);
+    });
 
-    expect(await frencapital.balanceOf(owner.address, 0)).to.equal(620);
+    it("Should decrease the amount of participants when balance is zero", async function () {
+      const burn = 970;
+      const mint = 1000;
+      let mintTx = await frencapital.mint(addr1.address, mint);
+      await mintTx.wait();
+  
+      let burnTx = await frencapital.burn(addr1.address, burn);
+      await burnTx.wait();
+  
+      expect(await frencapital.participants()).to.equal(0);
+    });
   });
-
-  it("Should burn the tokens of an address when called", async function () {
-    const burn = 500;
-    const mint = 1000;
-    let mintTx = await frencapital.mint(addr1.address, mint);
-    await mintTx.wait();
-
-    let burnTx = await frencapital.burn(addr1.address, burn);
-    await burnTx.wait();
-
-    expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(500);
-  });
+  
 });
