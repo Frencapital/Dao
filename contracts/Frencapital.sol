@@ -26,7 +26,7 @@ contract Frencapital is Ownable, ERC1155 {
            _mint(a, FOUN, 1, "");
         }
 
-        uint fee = amount * feePromille * 1000 / 100000;
+        uint fee = amount * feePromille * 1000 / 1000000;
         _mint(this.owner(), FREN, fee, "");
         _mint(a, FREN, amount - fee, "");
     }

@@ -38,7 +38,7 @@ describe("Frencapital", function () {
     context("FREN tokens", () => {
       it("Should increase the balance of participant and owner after minting", async function () {
         const mint = 1000;
-        const fee = 30;
+        const fee = 3;
         const mintTx = await frencapital.mint(addr1.address, mint);
         // wait until the transaction is mined
         await mintTx.wait();
@@ -76,11 +76,11 @@ describe("Frencapital", function () {
       let burnTx = await frencapital.burn(addr1.address, burn);
       await burnTx.wait();
   
-      expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(470);
+      expect(await frencapital.balanceOf(addr1.address, 0)).to.equal(497);
     });
 
     it("Should decrease the amount of participants when balance is zero", async function () {
-      const burn = 970;
+      const burn = 997;
       const mint = 1000;
       let mintTx = await frencapital.mint(addr1.address, mint);
       await mintTx.wait();
