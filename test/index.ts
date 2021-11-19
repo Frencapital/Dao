@@ -91,5 +91,14 @@ describe("Frencapital", function () {
       expect(await frencapital.participants()).to.equal(0);
     });
   });
+
+  context("share calculation", () => {
+    it("Should track total supply per token", async () => {
+      const mintTx = await frencapital.mint(addr1.address, 1000);
+      await mintTx.wait();
+      expect(await frencapital.totalSupply(0)).to.equal(1000);
+      expect(await frencapital.totalSupply(1)).to.equal(1);
+    });
+  });
   
 });

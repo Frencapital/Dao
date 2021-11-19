@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Frencapital is Ownable, ERC1155 {
+contract Frencapital is Ownable, ERC1155Supply {
+
     uint256 public constant FREN = 0;
     uint256 public constant FOUN = 1;
     uint8 public participants = 0;
